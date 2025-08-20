@@ -1,9 +1,7 @@
-
-
+import java.util.Scanner;
 public class LinkedList {
-    
-    // Node class
-    class Node {
+
+    static class Node {
         int data;
         Node next;
 
@@ -13,82 +11,188 @@ public class LinkedList {
         }
     }
 
-   
-    Node head;
+    private Node head;
 
- 
-    public void insert(int data) {
+    public void addAtHead(int data) {
         Node newNode = new Node(data);
+        newNode.next = head;
+        head = newNode;
+    }
 
+    public void addAtTail(int data) {
+        Node newNode = new Node(data);
         if (head == null) {
             head = newNode;
             return;
         }
-
-        Node current = head;
-        while (current.next != null) {
-            current = current.next;
+        Node temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
         }
-
-        current.next = newNode;
+        temp.next = newNode;
     }
 
-   
-    public void delete(int key) {
-        Node current = head, prev = null;
-
-    
-        if (current != null && current.data == key) {
-            head = current.next; 
+    public void addAtPosition(int data, int position) {
+        if (position < 1) {
+            System.out.println("Invalid position.");
             return;
         }
-
-        
-        while (current != null && current.data != key) {
-            prev = current;
-            current = current.next;
-        }
-
-        
-        if (current == null) {
-            System.out.println("Key " + key + " not found.");
+        if (position == 1) {
+            addAtHead(data);
             return;
         }
-
-      
-        prev.next = current.next;
+        Node newNode = new Node(data);
+        Node temp = head;
+        for (int i = 1; temp != null && i < position - 1; i++) {
+            temp = temp.next;
+        }
+        if (temp == null) {
+            System.out.println("Position out of range.");
+            return;
+        }
+        newNode.next = temp.next;
+        temp.next = newNode;
     }
 
-  
+    public void removeHead() {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        head = head.next;
+    }
+
+    public void removeTail() {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        if (head.next == null) {
+            head = null;
+            return;
+        }
+        Node temp = head;
+        while (temp.next.next != null) {
+            temp = temp.next;
+        }
+        temp.next = null;
+    }
+
+    public void removeAtPosition(int position) {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        if (position == 1) {
+            removeHead();
+            return;
+        }
+        Node temp = head;
+        for (int i = 1; temp != null && i < position - 1; i++) {
+            temp = temp.next;
+        }
+        if (temp == null || temp.next == null) {
+            System.out.println("Position out of range.");
+            return;
+        }
+        temp.next = temp.next.next;
+    }
+
+    // Remove first node with the given value
+    public void deleteByValue(int value) {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        if (head.data == value) {
+            head = head.next;
+            System.out.println("Node with value " + value + " deleted from head.");
+            return;
+        }
+        Node temp = head;
+        while (temp.next != null && temp.next.data != value) {
+            temp = temp.next;
+        }
+        if (temp.next == null) {
+            System.out.println("Value not found in the list.");
+            return;
+        }
+        temp.next = temp.next.next;
+        System.out.println("Node with value " + value + " deleted.");
+    }
+
+
     public void display() {
-        Node current = head;
-        if (current == null) {
-            System.out.println("List is empty");
+        if (head == null) {
+            System.out.println("List is empty.");
             return;
         }
-
-        while (current != null) {
-            System.out.print(current.data + " -> ");
-            current = current.next;
+        Node temp = head;
+        while (temp != null) {
+            System.out.print(temp.data + " -> ");
+            temp = temp.next;
         }
         System.out.println("null");
     }
 
+
     public static void main(String[] args) {
         LinkedList list = new LinkedList();
+        Scanner sc = new Scanner(System.in);
+        int choice, data, position;
 
-        list.insert(10);
-        list.insert(20);
-        list.insert(30);
-        list.insert(40);
+        while (true) {
+            System.out.println("\n--- Singly Linked List Menu ---");
+            System.out.println("1. Add at Head");
+            System.out.println("2. Add at Tail");
+            System.out.println("3. Add at Position");
+            System.out.println("4. Remove Head");
+            System.out.println("5. Remove Tail");
+            System.out.println("6. Remove at Position");
+            System.out.println("7. Display List");
+            System.out.println("8. Delete by Value");
+            System.out.println("9. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
 
-        System.out.println("Linked List after insertion:");
-        list.display();
-
-        list.delete(20);
-        System.out.println("Linked List after deleting 20:");
-        list.display();
-
-        list.delete(100);
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Enter value to insert: ");
+                    data = sc.nextInt();
+                    list.addAtHead(data);
+                }
+                case 2 -> {
+                    System.out.print("Enter value to insert: ");
+                    data = sc.nextInt();
+                    list.addAtTail(data);
+                }
+                case 3 -> {
+                    System.out.print("Enter value to insert: ");
+                    data = sc.nextInt();
+                    System.out.print("Enter position: ");
+                    position = sc.nextInt();
+                    list.addAtPosition(data, position);
+                }
+                case 4 -> list.removeHead();
+                case 5 -> list.removeTail();
+                case 6 -> {
+                    System.out.print("Enter position: ");
+                    position = sc.nextInt();
+                    list.removeAtPosition(position);
+                }
+                case 7 -> list.display();
+                case 8 -> {
+                    System.out.print("Enter value to delete: ");
+                    int v = sc.nextInt();
+                    list.deleteByValue(v);
+                }
+                case 9 -> {
+                    System.out.println("Exiting program...");
+                    sc.close();
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Try again.");
+            }
+        }
     }
 }
